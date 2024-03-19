@@ -6,6 +6,8 @@ public class Coder {
     private int age;
     private String clan;
 
+    public Coder(){}
+
     public Coder(int id, String name, int age, String clan) {
         this.id = id;
         this.name = name;
