@@ -37,11 +37,25 @@ public class CoderModel implements CRUD {
 
     @Override
     public boolean update(Object object) {
+
         return false;
     }
 
     @Override
     public boolean delete(Object object) {
+        Connection connection = ConfigDB.openConnection();
+        Coder coder = (Coder)object;
+        try {
+            String sql = "DELETE FROM coder where id="+coder.getId();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.execute();
+            System.out.println(ps.execute());
+            ps.close();
+            ConfigDB.closeConnection();
+            return ps.execute();
+        }catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "The database doesn't connect "+e.getMessage());
+        }
         return false;
     }
 
@@ -60,6 +74,7 @@ public class CoderModel implements CRUD {
                 coder.setAge(rs.getInt("age"));
                 coder.setName(rs.getString("clan"));
                 coders.add(coder);
+                ps.close();
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect");
@@ -80,6 +95,7 @@ public class CoderModel implements CRUD {
             while (rs.next()){
                 coder = new Coder(rs.getInt("id"),rs.getString("name"),rs.getInt("age"), rs.getString("clan"));
             }
+            ps.close();
         }catch (SQLException e){
             JOptionPane.showMessageDialog(null, "The database doesn't connect");
         }
@@ -99,6 +115,7 @@ public class CoderModel implements CRUD {
             while (rs.next()){
                 coder = new Coder(rs.getInt("id"),rs.getString("name"),rs.getInt("age"), rs.getString("clan"));
             }
+            ps.close();
         }catch (SQLException e){
             JOptionPane.showMessageDialog(null, "The database doesn't connect");
         }

@@ -35,10 +35,23 @@ public class CoderController {
         JOptionPane.showMessageDialog(null, coder.toString());
     }
 
-    public void getCoderByName(String name){
-        JOptionPane.showMessageDialog(null, coderModel.findByName(name).toString());
+    public void getCoderByName(){
+        String search = JOptionPane.showInputDialog(null,"Enter the name to search");
+        JOptionPane.showMessageDialog(null, coderModel.findByName(search).toString());
     }
-    public void getCoderById(int id){
+    public void getCoderById(){
+        String toSearch = JOptionPane.showInputDialog(null,"Enter the id to search");
+        int id = Integer.parseInt(toSearch);
         JOptionPane.showMessageDialog(null, coderModel.findById(id).toString());
+    }
+
+    public void deleteCoder(){
+        String toDelete = JOptionPane.showInputDialog(null,"Enter the coder name to delete");
+        if (coderModel.delete(coderModel.findByName(toDelete))){
+            JOptionPane.showMessageDialog(null, "Coder deleted successfully");
+            return;
+        }
+        JOptionPane.showMessageDialog(null, "Coder deleted fail");
+
     }
 }

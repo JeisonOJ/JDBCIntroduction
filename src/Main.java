@@ -6,7 +6,7 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         CoderController coderController = new CoderController();
-        String option = "";
+        String option;
         String message = """
                 ...::CODERS MENU::...
                 1. List Coders.
@@ -18,12 +18,12 @@ public class Main {
                 7. Exit
                 """;
         do {
-            option = JOptionPane.showInputDialog(null,message);
-            if (option == null){
+            option = JOptionPane.showInputDialog(null, message);
+            if (option == null) {
                 break;
             }
 
-            switch (option){
+            switch (option) {
                 case "1":
                     coderController.getAll();
                     break;
@@ -33,17 +33,21 @@ public class Main {
                 case "3":
                     break;
                 case "4":
+                    coderController.deleteCoder();
                     break;
                 case "5":
+                    coderController.getCoderByName();
                     break;
                 case "6":
+                    coderController.getCoderById();
                     break;
                 case "7":
+                    JOptionPane.showMessageDialog(null, "You are leaving the menu...");
                     break;
                 default:
                     break;
             }
 
-        }while (option.equals("7"));
+        } while (option.equals("7"));
     }
 }
