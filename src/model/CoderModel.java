@@ -16,20 +16,20 @@ public class CoderModel implements CRUD {
         Connection connection = ConfigDB.openConnection();
         Coder coder = (Coder) object;
         String sql = "INSERT INTO coder(name,age,clan) values(?,?,?)";
-        try{
+        try {
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1,coder.getName());
-            ps.setInt(2,coder.getAge());
-            ps.setString(3,coder.getClan());
+            ps.setString(1, coder.getName());
+            ps.setInt(2, coder.getAge());
+            ps.setString(3, coder.getClan());
             ps.execute();
             ResultSet rs = ps.getGeneratedKeys();
-            while (rs.next()){
+            while (rs.next()) {
                 coder.setId(rs.getInt(1));
             }
             ps.close();
             JOptionPane.showMessageDialog(null, "Coder added successfully");
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "The database doesn't connect "+e.getMessage());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
         }
         ConfigDB.closeConnection();
         return coder;
@@ -37,24 +37,38 @@ public class CoderModel implements CRUD {
 
     @Override
     public boolean update(Object object) {
+        Connection connection = ConfigDB.openConnection();
+        Coder coder = (Coder) object;
 
+        try {
+            String sql = "UPDATE coder SET name = ?, age = ?, clan = ? WHERE id = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, coder.getName());
+            ps.setInt(2, coder.getAge());
+            ps.setString(3, coder.getClan());
+            ps.setInt(4, coder.getId());
+            return ps.execute();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
+        }
         return false;
     }
 
     @Override
     public boolean delete(Object object) {
         Connection connection = ConfigDB.openConnection();
-        Coder coder = (Coder)object;
+        Coder coder = (Coder) object;
         try {
-            String sql = "DELETE FROM coder where id="+coder.getId();
+            String sql = "DELETE FROM coder WHERE id = ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, coder.getId());
             ps.execute();
             System.out.println(ps.execute());
             ps.close();
             ConfigDB.closeConnection();
             return ps.execute();
-        }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "The database doesn't connect "+e.getMessage());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
         }
         return false;
     }
@@ -86,17 +100,17 @@ public class CoderModel implements CRUD {
     @Override
     public Object findById(int id) {
         Connection connection = ConfigDB.openConnection();
-        StringBuilder sql = new StringBuilder();
+        String sql;
         Coder coder = null;
-        try{
-            sql.append("SELECT * from coder where id=").append(id).append(";");
-            PreparedStatement ps = connection.prepareStatement(sql.toString());
+        try {
+            sql=("SELECT * FROM coder WHERE id=?");
+            PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
-                coder = new Coder(rs.getInt("id"),rs.getString("name"),rs.getInt("age"), rs.getString("clan"));
+            while (rs.next()) {
+                coder = new Coder(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("clan"));
             }
             ps.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect");
         }
         ConfigDB.closeConnection();
@@ -106,17 +120,17 @@ public class CoderModel implements CRUD {
     @Override
     public Object findByName(String name) {
         Connection connection = ConfigDB.openConnection();
-        StringBuilder sql = new StringBuilder();
+        String sql;
         Coder coder = null;
-        try{
-            sql.append("SELECT * from coder where name=").append(name).append(";");
-            PreparedStatement ps = connection.prepareStatement(sql.toString());
+        try {
+            sql = ("SELECT * from coder where name=?;");
+            PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
-                coder = new Coder(rs.getInt("id"),rs.getString("name"),rs.getInt("age"), rs.getString("clan"));
+            while (rs.next()) {
+                coder = new Coder(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("clan"));
             }
             ps.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect");
         }
         ConfigDB.closeConnection();
