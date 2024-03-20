@@ -5,12 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConfigDB {
-    public static final String URL = "jdbc:mysql://localhost:3306/jdbc_introduction";
-    public static final String user = "root";
-    public static final String password = "Rlwl2023.";
     public static Connection connection = null;
 
     public static Connection openConnection() {
+        String URL = "jdbc:mysql://localhost:3306/jdbc_introduction";
+        String user = "root";
+        String password = "Rlwl2023.";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(URL, user, password);

@@ -39,6 +39,7 @@ public class CoderModel implements CRUD {
     public boolean update(Object object) {
         Connection connection = ConfigDB.openConnection();
         Coder coder = (Coder) object;
+        boolean isUpdate = false;
 
         try {
             String sql = "UPDATE coder SET name = ?, age = ?, clan = ? WHERE id = ?;";
@@ -47,30 +48,50 @@ public class CoderModel implements CRUD {
             ps.setInt(2, coder.getAge());
             ps.setString(3, coder.getClan());
             ps.setInt(4, coder.getId());
-            return ps.execute();
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Coder Updated successfully");
+
+                isUpdate = true;
+            } else {
+                JOptionPane.showMessageDialog(null, "The coder doesn't exist");
+
+            }
+
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
         }
-        return false;
+        return isUpdate;
     }
 
     @Override
     public boolean delete(Object object) {
+        System.out.println(object);
         Connection connection = ConfigDB.openConnection();
         Coder coder = (Coder) object;
+        System.out.println(coder);
+        boolean isDelete = false;
+        System.out.println("Entramos a delete");
         try {
+            System.out.println("Entramos a delete al try");
+
             String sql = "DELETE FROM coder WHERE id = ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
+            System.out.println("id a eliminar: " + coder.getId());
             ps.setInt(1, coder.getId());
-            ps.execute();
-            System.out.println(ps.execute());
-            ps.close();
-            ConfigDB.closeConnection();
-            return ps.execute();
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(null, "Coder deleted successfully");
+                isDelete = true;
+            } else {
+                JOptionPane.showMessageDialog(null, "The coder doesn't exist");
+            }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "DELETE: The database doesn't connect " + e.getMessage());
         }
-        return false;
+        ConfigDB.closeConnection();
+        return isDelete;
     }
 
     @Override
@@ -86,9 +107,8 @@ public class CoderModel implements CRUD {
                 coder.setId(rs.getInt("id"));
                 coder.setName(rs.getString("name"));
                 coder.setAge(rs.getInt("age"));
-                coder.setName(rs.getString("clan"));
+                coder.setClan(rs.getString("clan"));
                 coders.add(coder);
-                ps.close();
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect");
@@ -103,15 +123,15 @@ public class CoderModel implements CRUD {
         String sql;
         Coder coder = null;
         try {
-            sql=("SELECT * FROM coder WHERE id=?");
+            sql = ("SELECT * FROM coder WHERE id=?;");
             PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 coder = new Coder(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("clan"));
             }
-            ps.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "The database doesn't connect");
+            JOptionPane.showMessageDialog(null, "FINDBYID: The database doesn't connect");
         }
         ConfigDB.closeConnection();
         return coder;
@@ -121,19 +141,20 @@ public class CoderModel implements CRUD {
     public Object findByName(String name) {
         Connection connection = ConfigDB.openConnection();
         String sql;
-        Coder coder = null;
+        ArrayList<Coder> coders = new ArrayList<>();
+
         try {
-            sql = ("SELECT * from coder where name=?;");
+            sql = "SELECT * from coder where name like '%" + name + "%';";
             PreparedStatement ps = connection.prepareStatement(sql);
+
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                coder = new Coder(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("clan"));
+                coders.add(new Coder(rs.getInt("id"), rs.getString("name"), rs.getInt("age"), rs.getString("clan")));
             }
-            ps.close();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "The database doesn't connect");
+            JOptionPane.showMessageDialog(null, "FINDBYNAME: The database doesn't connect");
         }
         ConfigDB.closeConnection();
-        return coder;
+        return coders;
     }
 }
