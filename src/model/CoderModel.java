@@ -26,7 +26,6 @@ public class CoderModel implements CRUD {
             while (rs.next()) {
                 coder.setId(rs.getInt(1));
             }
-            ps.close();
             JOptionPane.showMessageDialog(null, "Coder added successfully");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
@@ -60,6 +59,8 @@ public class CoderModel implements CRUD {
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "The database doesn't connect " + e.getMessage());
+        }finally {
+            ConfigDB.closeConnection();
         }
         return isUpdate;
     }
@@ -144,8 +145,9 @@ public class CoderModel implements CRUD {
         ArrayList<Coder> coders = new ArrayList<>();
 
         try {
-            sql = "SELECT * from coder where name like '%" + name + "%';";
+            sql = "SELECT * from coder where name like ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1,"'%"+name+"%'");
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

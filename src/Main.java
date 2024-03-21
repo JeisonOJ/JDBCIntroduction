@@ -31,6 +31,7 @@ public class Main {
                     coderController.createCoder();
                     break;
                 case "3":
+                    coderController.updateCoder();
                     break;
                 case "4":
                     coderController.deleteCoder();
